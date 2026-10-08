@@ -1,0 +1,50 @@
+<main>
+  <h1>My TODO list</h1>
+
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p role="status">Loading...</p>
+  } @else {
+    <form (ngSubmit)="add()">
+      <label for="title">New TODO</label>
+
+      <input
+        id="title"
+        name="title"
+        [(ngModel)]="title"
+        maxlength="200"
+        required
+        [disabled]="saving()"
+      />
+
+      <button
+        type="submit"
+        [disabled]="!title.trim() || saving()"
+      >
+        {{ saving() ? 'Adding...' : 'Add' }}
+      </button>
+    </form>
+
+    <ul>
+      @for (item of todos(); track item.id) {
+        <li>
+          <span>{{ item.title }}</span>
+
+          <button
+            type="button"
+            [attr.aria-label]="'Delete ' + item.title"
+            [disabled]="deleting().includes(item.id)"
+            (click)="delete(item)"
+          >
+            {{ deleting().includes(item.id) ? 'Deleting...' : 'Delete' }}
+          </button>
+        </li>
+      } @empty {
+        <li>No TODOs yet. Add your first item above.</li>
+      }
+    </ul>
+  }
+</main>
